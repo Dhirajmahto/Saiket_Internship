@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced To-Do List App</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .todo-container {
+        background-color: #fff;
+        width: 100%;
+        max-width: 600px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        padding: 30px 40px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .input-container {
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    .input-container input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+
+    .input-container button {
+        padding: 12px 20px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 1rem;
+        border-radius: 0 8px 8px 0;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    .input-container button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    ul.todo-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul.todo-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background-color: #f1f1f1;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: background 0.3s;
+    }
+
+    ul.todo-list li.completed {
+        background-color: #d4edda;
+        text-decoration: line-through;
+        color: #155724;
+    }
+
+    ul.todo-list li button {
+        margin-left: 5px;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+
+    ul.todo-list li button.edit {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    ul.todo-list li button.edit:hover {
+        background-color: #e0a800;
+    }
+
+    ul.todo-list li button.delete {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    ul.todo-list li button.delete:hover {
+        background-color: #a71d2a;
+    }
+
+    ul.todo-list li button.complete {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    ul.todo-list li button.complete:hover {
+        background-color: #1e7e34;
+    }
+
+    .filters {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .filters button {
+        padding: 8px 15px;
+        margin: 0 5px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .filters button.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .filters button:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .todo-container {
+            padding: 20px;
+        }
+
+        .input-container input, .input-container button {
+            font-size: 0.9rem;
+        }
+
+        ul.todo-list li {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        ul.todo-list li div.buttons {
+            margin-top: 8px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="todo-container">
+    <h2>To-Do List App</h2>
+    <div class="input-container">
+        <input type="text" id="task-input" placeholder="Add a new task">
+        <button id="add-task-btn">Add</button>
+    </div>
+    <ul class="todo-list" id="todo-list"></ul>
+    <div class="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="completed">Completed</button>
+        <button data-filter="pending">Pending</button>
+    </div>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+const taskInput = document.getElementById('task-input');
+const addTaskBtn = document.getElementById('add-task-btn');
+const todoList = document.getElementById('todo-list');
+const filterBtns = document.querySelectorAll('.filters button');
+
+// Render tasks
+function renderTasks(filter = 'all') {
+    todoList.innerHTML = '';
+    let filteredTasks = tasks;
+
+    if(filter === 'completed') filteredTasks = tasks.filter(t => t.completed);
+    if(filter === 'pending') filteredTasks = tasks.filter(t => !t.completed);
+
+    filteredTasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = task.completed ? 'completed' : '';
+        li.innerHTML = `
+            <span>${task.name}</span>
+            <div class="buttons">
+                <button class="complete">${task.completed ? 'Undo' : 'Complete'}</button>
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+            </div>
+        `;
+        // Complete
+        li.querySelector('.complete').addEventListener('click', () => {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            renderTasks(filter);
+        });
+        // Edit
+        li.querySelector('.edit').addEventListener('click', () => {
+            const newName = prompt("Edit task:", tasks[index].name);
+            if(newName) {
+                tasks[index].name = newName;
+                saveTasks();
+                renderTasks(filter);
+            }
+        });
+        // Delete
+        li.querySelector('.delete').addEventListener('click', () => {
+            if(confirm("Are you sure you want to delete this task?")){
+                tasks.splice(index,1);
+                saveTasks();
+                renderTasks(filter);
+            }
+        });
+
+        todoList.appendChild(li);
+    });
+}
+
+// Add task
+addTaskBtn.addEventListener('click', () => {
+    const taskName = taskInput.value.trim();
+    if(taskName){
+        tasks.push({name: taskName, completed: false});
+        taskInput.value = '';
+        saveTasks();
+        renderTasks();
+    } else {
+        alert("Please enter a task!");
+    }
+});
+
+// Filter buttons
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTasks(btn.dataset.filter);
+    });
+});
+
+// Save to localStorage
+function saveTasks(){
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Initialize
+renderTasks();
+</script>
+
+</body>
+</html>

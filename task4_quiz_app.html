@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .quiz-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .quiz-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+        }
+        
+        .question-number {
+            font-size: 14px;
+            color: #6a11cb;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #f5f5f5;
+            border-color: #c0c0c0;
+        }
+        
+        .option.selected {
+            background-color: #e6f0ff;
+            border-color: #6a11cb;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-next {
+            background-color: #6a11cb;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: #5a0db5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-next:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #6a11cb;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .result-container h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #6a11cb;
+            margin: 20px 0;
+        }
+        
+        .message {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        
+        .btn-restart {
+            background-color: #6a11cb;
+            color: white;
+        }
+        
+        .btn-restart:hover {
+            background-color: #5a0db5;
+            transform: translateY(-2px);
+        }
+        
+        .validation-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            height: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .quiz-header h1 {
+                font-size: 24px;
+            }
+            
+            .question-text {
+                font-size: 18px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>JavaScript Knowledge Quiz</h1>
+            <p>Test your JavaScript skills with these multiple-choice questions</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div id="quiz-content">
+            <!-- Quiz content will be dynamically inserted here -->
+        </div>
+        
+        <div class="validation-message" id="validation-message"></div>
+        
+        <div class="quiz-footer">
+            <div id="question-counter"></div>
+            <button class="btn btn-next" id="next-btn">Next Question</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions data
+        const quizQuestions = [
+            {
+                question: "Which of the following is NOT a JavaScript data type?",
+                options: ["String", "Boolean", "Float", "Undefined"],
+                correctAnswer: 2
+            },
+            {
+                question: "What does the '===' operator do in JavaScript?",
+                options: [
+                    "Assigns a value to a variable",
+                    "Compares both value and type",
+                    "Checks if a value is null",
+                    "Performs type conversion before comparison"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which method is used to add an element to the end of an array?",
+                options: ["push()", "pop()", "shift()", "unshift()"],
+                correctAnswer: 0
+            },
+            {
+                question: "What will 'typeof null' return in JavaScript?",
+                options: ["null", "undefined", "object", "number"],
+                correctAnswer: 2
+            },
+            {
+                question: "Which keyword is used to declare a variable in JavaScript that cannot be reassigned?",
+                options: ["var", "let", "const", "static"],
+                correctAnswer: 2
+            }
+        ];
+
+        // DOM elements
+        const quizContent = document.getElementById('quiz-content');
+        const nextBtn = document.getElementById('next-btn');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress');
+        const validationMessage = document.getElementById('validation-message');
+
+        // Quiz state variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+
+        // Initialize the quiz
+        function initQuiz() {
+            displayQuestion();
+            updateProgressBar();
+            updateQuestionCounter();
+        }
+
+        // Display the current question
+        function displayQuestion() {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            
+            const questionHTML = `
+                <div class="question-container">
+                    <div class="question-number">Question ${currentQuestionIndex + 1} of ${quizQuestions.length}</div>
+                    <div class="question-text">${currentQuestion.question}</div>
+                    <div class="options-container">
+                        ${currentQuestion.options.map((option, index) => `
+                            <label class="option ${userAnswers[currentQuestionIndex] === index ? 'selected' : ''}">
+                                <input type="radio" name="answer" value="${index}" ${userAnswers[currentQuestionIndex] === index ? 'checked' : ''}>
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            quizContent.innerHTML = questionHTML;
+            
+            // Add event listeners to options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove selected class from all options
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    option.classList.add('selected');
+                    
+                    // Get the selected value
+                    const selectedOption = option.querySelector('input');
+                    selectedOption.checked = true;
+                    
+                    // Store the user's answer
+                    userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+                    
+                    // Clear validation message
+                    validationMessage.textContent = '';
+                    
+                    // Enable the next button
+                    nextBtn.disabled = false;
+                });
+            });
+            
+            // Disable next button initially if no answer is selected
+            nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        // Update question counter
+        function updateQuestionCounter() {
+            questionCounter.textContent = `${currentQuestionIndex + 1} / ${quizQuestions.length}`;
+        }
+
+        // Display the final results
+        function displayResults() {
+            // Calculate score
+            quizQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            
+            let message;
+            if (percentage >= 80) {
+                message = "Excellent! You're a JavaScript expert!";
+            } else if (percentage >= 60) {
+                message = "Good job! You have a solid understanding of JavaScript.";
+            } else if (percentage >= 40) {
+                message = "Not bad! Keep learning to improve your skills.";
+            } else {
+                message = "Keep practicing! JavaScript takes time to master.";
+            }
+            
+            const resultsHTML = `
+                <div class="result-container">
+                    <h2>Quiz Completed!</h2>
+                    <div class="score">${score}/${quizQuestions.length}</div>
+                    <div class="message">${message}</div>
+                    <button class="btn btn-restart" id="restart-btn">Take Quiz Again</button>
+                </div>
+            `;
+            
+            quizContent.innerHTML = resultsHTML;
+            
+            // Hide progress bar and question counter
+            document.querySelector('.progress-bar').style.display = 'none';
+            questionCounter.style.display = 'none';
+            nextBtn.style.display = 'none';
+            validationMessage.style.display = 'none';
+            
+            // Add event listener to restart button
+            document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+        }
+
+        // Restart the quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            
+            // Show hidden elements
+            document.querySelector('.progress-bar').style.display = 'block';
+            questionCounter.style.display = 'block';
+            nextBtn.style.display = 'block';
+            validationMessage.style.display = 'block';
+            
+            initQuiz();
+        }
+
+        // Event listener for next button
+        nextBtn.addEventListener('click', () => {
+            // Check if an answer is selected
+            if (userAnswers[currentQuestionIndex] === null) {
+                validationMessage.textContent = 'Please select an answer before proceeding.';
+                return;
+            }
+            
+            // Move to next question or show results
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+                updateProgressBar();
+                updateQuestionCounter();
+                
+                // Update next button text if it's the last question
+                if (currentQuestionIndex === quizQuestions.length - 1) {
+                    nextBtn.textContent = 'Show Results';
+                }
+            } else {
+                displayResults();
+            }
+        });
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

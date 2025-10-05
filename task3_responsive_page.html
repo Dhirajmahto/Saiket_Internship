@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhiraj Kumar - Portfolio</title>
+<style>
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* Container Grid */
+.container {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    grid-area: header;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ffd700;
+}
+
+/* Sidebar */
+aside {
+    grid-area: sidebar;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+aside h2 {
+    margin-bottom: 15px;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+aside ul {
+    list-style: none;
+}
+
+aside ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+aside ul li.active {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    padding-left: 10px;
+}
+
+/* Main content */
+main {
+    grid-area: main;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+main h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+section {
+    margin-bottom: 25px;
+}
+
+section h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+section p, section ul {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+ul li {
+    margin-left: 20px;
+}
+
+/* Footer */
+footer {
+    grid-area: footer;
+    background-color: #333;
+    color: #fff;
+    padding: 25px 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    color: #ffd700;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .container {
+        grid-template-areas:
+            "header"
+            "main"
+            "sidebar"
+            "footer";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav a {
+        margin: 10px 5px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <h1>Dhiraj Kumar</h1>
+        <nav>
+            <a href="#">About</a>
+            <a href="#">Skills</a>
+            <a href="#">Projects</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Sidebar -->
+    <aside>
+        <h2>Quick Links</h2>
+        <ul>
+            <li class="active">Dashboard</li>
+            <li>Portfolio</li>
+            <li>Resume</li>
+            <li>Contact</li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <!-- About -->
+        <section>
+            <h2>About Me</h2>
+            <p>Hi! I'm Dhiraj Kumar, a passionate Full Stack Developer with experience in Java, Spring Boot, React, and building modern web applications. I am dedicated to creating high-quality software and constantly learning new technologies.</p>
+        </section>
+
+        <!-- Skills -->
+        <section>
+            <h2>Skills</h2>
+            <ul>
+                <li>Java, Spring Boot, REST API Development</li>
+                <li>React, HTML, CSS, JavaScript</li>
+                <li>MySQL, MongoDB</li>
+                <li>Data Structures & Algorithms</li>
+                <li>System Design (Low-Level & High-Level)</li>
+            </ul>
+        </section>
+
+        <!-- Projects -->
+        <section>
+            <h2>Projects</h2>
+            <div class="card">
+                <h3>Smart Email Reply Generator</h3>
+                <p>A productivity tool that generates AI-based email replies using Java, Spring Boot, React, and Chrome Extension integration.</p>
+            </div>
+            <div class="card">
+                <h3>Weather Prediction System</h3>
+                <p>A system that predicts weather patterns using real-time data analysis and visualizes forecasts with charts.</p>
+            </div>
+            <div class="card">
+                <h3>Portfolio Website</h3>
+                <p>A personal portfolio website showcasing skills, projects, and experience, designed using HTML, CSS, and JavaScript.</p>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section>
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:dhirajkumardev05@gmail.com">dhirajkumardev05@gmail.com</a></p>
+            <p>Phone: +91-9199393157</p>
+            <p>Location: Paralakhemundi, Odisha, India</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2025 Dhiraj Kumar | 
+        <a href="#">LinkedIn</a> | 
+        <a href="#">GitHub</a> | 
+        <a href="#">Portfolio</a>
+    </footer>
+</div>
+
+</body>
+</html>
